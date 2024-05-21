@@ -1,0 +1,28 @@
+name: Build Engine
+
+on: workflow_dispatch
+
+jobs:
+  build-windows:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ljmf00/setup-lua@v.1.0.1
+        with:
+          lua-version: 5.4.6
+          install-luarocks: true
+          luarocks-version: 3.11.0
+      - name: Install Dependencies
+        run: |
+         echo Starting LuaGL Install Process
+         luarocks install luagl
+      - name: Compile Code
+        run: |
+         echo Starting Lua Code Compilation Process
+         luac -o Source.luac source/Source.lua
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Source
+          path: .
