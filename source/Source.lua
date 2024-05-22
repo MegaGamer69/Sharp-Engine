@@ -33,3 +33,5 @@ local function InitializeEngine()
         print("ERROR//Status Code 0x01")
     end
 end
+
+InitializeEngine()

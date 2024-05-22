@@ -8,11 +8,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ljmf00/setup-lua@v.1.0.1
+      - uses: xpol/setup-lua@v1
         with:
-          lua-version: 5.4.6
-          install-luarocks: true
-          luarocks-version: 3.11.0
+          lua-version: "5.3.5"
+      - uses: leafo/gh-actions-luarocks@v4
       - name: Install Dependencies
         run: |
          echo Starting LuaGL Install Process
