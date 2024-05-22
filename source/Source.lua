@@ -1,37 +1,54 @@
 -- Direitos Autorais 2024 #Sharp Engine
 
 -- Importe a Biblioteca "LuaGL"
-local LuaGL = require("luagl")
+local GL = require("luagl")
 
--- Crie uma Função para Inicializar o Motor
-local function InitializeEngine()
-    print("Configurando o Motor Gráfico...")
+-- Leia o Arquivo de cada Shader
+local function ReadFile(PathName)
+    -- Cria um Local onde o Arquivo fica
+    local File = io.open(PathName, "r")
     
-    -- Cria um Shader de Vertex
-    local ShaderVertexCode = [[
-        #version 330 core
-        
-        layout(location = 0) in vec3 aPos;
-        
-        void main()
-        {
-            gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-        }
-    ]]
+    -- Leia o Conteúdo do Arquivo
+    local Content = File:read("*all")
+    File:close()
     
-    -- Cria uma Variavel para Verificar Erros no Shader
-    local SucessCompile = LuaGL.GetShader(Shader, LuaGL.COMPILE_STATUS)
-    
-    -- Cria um Programa do Shader
-    local ShaderProgram = LuaGL.CreateProgram()
-    
-    -- Coloca o Programa do Shader
-    LuaGL.AttachShader(ShaderProgram)
-    
-    -- Verifique se Existe Erros no Código de Shader
-    if not SuccessCompile then
-        print("ERROR//Status Code 0x01")
-    end
+    -- Retorna o Conteúdo
+    return Content
 end
 
-InitializeEngine()
+-- Compila o Shader
+local function CompileShader(ShaderCode, ShaderType)
+    -- Cria um Shader
+    local Shader = GL.CreateShader(ShaderType)
+    
+    -- Verifica se o Tipo do Shader está Correto
+    if ShaderType == GL.FRAGMENT_SHADER then
+        -- Defina e Compila a Fonte do Shader
+        GL.ShaderSource(Shader, ShaderCode)
+        GL.CompileShader(Shader)
+    end
+    
+    -- Retorna o Shader
+    return Shader
+end
+
+-- Leia o Arquivo no Caminho("./source/shader/Vision.glsl")
+local FragmentShaderFile = ReadFile("shader/Vision.glsl")
+
+-- Crie o Programa do Shader
+local ShaderProgram = GL.CreateProgram()
+
+-- Crie o Shader de Fragmento
+local FragmentShader = CompileShader()
+
+-- Coloque o Shader
+GL.AttachShader(ShaderProgram, FragmentShader)
+
+-- Conecte o Programa do Shader
+GL.LinkProgram(ShaderProgram)
+
+-- Use o Programa do Shader
+GL.UseShader(ShaderProgram)
+
+-- Agora, por Fim, Delete o Shader de Fragmento por ser Desnecessário após a Conexão
+GL.DeleteShader(FragmentShader)
