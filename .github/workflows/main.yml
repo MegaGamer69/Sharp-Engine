@@ -17,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: |
          echo Starting LuaGL Install Process
-         luarocks install luagl
+         luarocks install luagl GLUT_DIR=/usr/local
       - name: Compile Code
         run: |
          echo Starting Lua Code Compilation Process
